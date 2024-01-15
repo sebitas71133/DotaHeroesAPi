@@ -12,7 +12,7 @@ window.addEventListener('load', ()=>{
 });
 
 async function cargarNombresHerores(){
-    let url = `http://192.168.0.2:3000/api/dota/lista`;
+    let url = `https://dota-api-zen.onrender.com/api/dota/lista`;
 
     try {
         let response = await fetch(url,{method:'GET'})
@@ -30,7 +30,7 @@ async function cargarNombresHerores(){
 
 async function loadData(paginaActual){
 
-    let url = `http://192.168.0.2:3000/api/dota?resultadosPorPagina=4&paginaActual=${paginaActual}`;
+    let url = `https://dota-api-zen.onrender.com/api/dota?resultadosPorPagina=4&paginaActual=${paginaActual}`;
 
     try {
         let response = await fetch(url,{method:'GET'})
@@ -80,7 +80,7 @@ async function actualizarImagenes(currentPage){
 }
 
 function manejarClickHeroe(e) {
-    window.location.href = `http://192.168.0.2:3000/api/dota/${e.idheroes}`;
+    window.location.href = `https://dota-api-zen.onrender.com/api/dota/${e.idheroes}`;
 }
 
 function agregarTarjetaSection(section,contenido,clickCallBack){
@@ -197,7 +197,7 @@ function select(element) {
 }
 
 async function clickBusqueda(){
-    let url = `http://192.168.0.2:3000/api/dota/filtro?heroe=${usuario_busqueda.value}`;
+    let url = `https://dota-api-zen.onrender.com/api/dota/filtro?heroe=${usuario_busqueda.value}`;
 
     try {
         let response = await fetch(url,{method:'GET'})
