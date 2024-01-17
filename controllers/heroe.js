@@ -1,15 +1,12 @@
 const { query, response } = require('express');
-const path = require('path');
 const pool = require('../database/conexion');
-const fs = require('fs');
-const { log } = require('console');
 
 const getHeroes = (req=query,res=response) => {
     
-    let dataPorPagina =  req.query.resultadosPorPagina;
-    let paginaActual  = req.query.paginaActual;
+    let dataPorPagina =  req.query.resultadosPorPagina || 6;
+    let paginaActual  = req.query.paginaActual || 1;
   
-    let sql = `SELECT * FROM heroes 
+    let sql = `SELECT * FROM HEROES 
                 ORDER BY name
                 LIMIT ${dataPorPagina} 
                 OFFSET ${(paginaActual-1)*dataPorPagina}`;
@@ -39,7 +36,7 @@ const getHeroeFiltro = (req=query,res=response) => {
     
 
     let nombreHeroe = req.query.heroe;
-    let sql = `SELECT * FROM heroes 
+    let sql = `SELECT * FROM HEROES 
                 WHERE name = "${nombreHeroe}"`;
 
     try {
@@ -66,7 +63,7 @@ const getHeroeFiltro = (req=query,res=response) => {
 const listaNombresHeores = (req=query,res=response) => {
     
 
-    let sql = `SELECT name FROM heroes `;
+    let sql = `SELECT name FROM HEROES `;
     try {
         pool.query(sql,(error,rows,fields)=>{
             try {
@@ -90,7 +87,7 @@ const listaNombresHeores = (req=query,res=response) => {
 
 const getHeroe = (req=query,res=response) => {
     const {id} = req.params;
-    let sql = 'select * from heroes where idheroes = ?';
+    let sql = 'select * from HEROES where id= ?';
 
     try {
         pool.query(sql,[id],(error,rows,fields)=>{
@@ -114,27 +111,12 @@ const getHeroe = (req=query,res=response) => {
 
 }
 
-const getImageHeroe = (req=query,res=response)=> {
-        const {id} = req.params;
-        const pathImagen = path.join(__dirname,`../public/images/${id}.jpg`);
-
-        fs.readFile(pathImagen,(err,data)=>{
-            if(err){
-                console.error('Error al leer la imagen:', err);
-                
-                 res.status(404).send('Imagen no encontrada');
-            }else{
-                res.status(200).contentType('image/jpeg').end(data);
-            }
-        });
-}
 
 
 
 module.exports = {
     getHeroes,
     getHeroe,
-    getImageHeroe,
     getHeroeFiltro,
     listaNombresHeores
 }

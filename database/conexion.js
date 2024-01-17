@@ -4,8 +4,9 @@ const mysql = require('mysql2');
 //     {
 //         host : 'localhost',
 //         user : 'root',
-//         database : 'dota',
-//         port : '3306'
+//         database : 'dotaheroes',
+//         port : '3306',
+//         connectTimeout: 5000,
 //     }
 // )
 

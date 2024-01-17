@@ -5,13 +5,13 @@ const paginas_contenedor = document.querySelector('#paginas-container');
 let listaHeroes = [];
 let sugerencias = [];
 
-
 window.addEventListener('load', ()=>{
     actualizarImagenes(1);
     cargarNombresHerores();
 });
 
 async function cargarNombresHerores(){
+   // let url = `https://dota-api-zen.onrender.com/api/dota/lista`;
     let url = `https://dota-api-zen.onrender.com/api/dota/lista`;
 
     try {
@@ -23,14 +23,14 @@ async function cargarNombresHerores(){
         const { data }= await response.json();
         sugerencias = data.map(e=> e.name);
     } catch (err) {
-        console.error(err);
+        console.error("Error al cargar nombres",err);
     }
 }
 
 
 async function loadData(paginaActual){
 
-    let url = `https://dota-api-zen.onrender.com/api/dota?resultadosPorPagina=4&paginaActual=${paginaActual}`;
+    let url = `https://dota-api-zen.onrender.com/api/dota?resultadosPorPagina=6&paginaActual=${paginaActual}`;
 
     try {
         let response = await fetch(url,{method:'GET'})
@@ -42,13 +42,11 @@ async function loadData(paginaActual){
         
         return data;
     } catch (err) {
-        console.error(err);
+        console.error("Error al cargar data",err);
     }
 }
 
-
-
-async function actualizarImagenes(currentPage){
+async function  actualizarImagenes(currentPage){
 
     try {
         listaHeroes = await loadData(currentPage);
@@ -80,7 +78,7 @@ async function actualizarImagenes(currentPage){
 }
 
 function manejarClickHeroe(e) {
-    window.location.href = `https://dota-api-zen.onrender.com/api/dota/${e.idheroes}`;
+    window.location.href = `https://dota-api-zen.onrender.com/api/dota/${e.id}`;
 }
 
 function agregarTarjetaSection(section,contenido,clickCallBack){
@@ -91,37 +89,49 @@ function agregarTarjetaSection(section,contenido,clickCallBack){
 }
 
 function crearContenidoHeroe(e){
+    
+
     return `
-                
+
                     
     <div class="image">
         <img src="${e.image}" alt="">
     </div>
     <div class="content">
         <div class="tipo">
-            <div>${e.type}</div>
+            <div>
+                 <img style="width: 10%;height: auto;" src="${iconos_atributos[e.attribute]}" >
+                 ${e.attribute}
+            </div>
+           
         </div>
         <div class="nombre">
             <div>${e.name}</div>
         </div>
         <div class="frase">
-            ${e.quote}
+            ${e.phrase}
         </div>
         <div class="descripcion">
             ${e.description}
         </div>
         <div class="ataque">
-            <div class="ataquec">Tipo de ataque</div>
-            <div>${e.attack}</div>
+            <div class="ataquec">Attack Type</div>
+            <div>
+            <img class="icono_tipo_ataque"
+            " src="${iconos_tipo_ataque[e.attack]}" >
+            ${e.attack}
+            </div>
         </div>
         <div class="ataquec">
-            <div id="complexity">Complejidad</div>
-            <div>${e.complexity}</div>
+            <div id="complexity">Complexity</div>
+            <div>${complejidad(e)}</div>
         </div>
+        
+        
     </div>
 
 
-    `;
+    `
 }
 
 function crearPaginacion(){
@@ -148,13 +158,18 @@ function limpiarContenedor(contenedor){
     }
 }
 
+
+// FILTROS
+
+
 const usuario_busqueda = document.querySelector('#filtro');
 let contenedor_busqueda  = document.querySelector('.busqueda');
 const caja_sugerencias = document.querySelector('.sugerencias');
 const searchLink = document.querySelector('#busquedaGoogle');
+let filtros = [];
 
 usuario_busqueda.onkeyup = (e) => {
-    let filtros = [];
+    
     let contenido = '';
     let busqueda = e.target.value;
 
@@ -211,7 +226,7 @@ async function clickBusqueda(){
         agregarTarjetaSection(tarjetas_contenedor, contenido, () => manejarClickHeroe(data[0]));
         contenedor_busqueda.classList.remove('active');
     } catch (err) {
-        console.error(err);
+        console.error("Error al hacer click",err);
     }
 }
 
@@ -227,4 +242,12 @@ function desplegarCoincidencias(filtros,contenido){
         li.innerHTML = contenido;
         caja_sugerencias.appendChild(li);
     })
+}
+
+function complejidad(e){
+    let circulos = "";
+    for (let index = 0; index < e.complexity; index++) {
+        circulos = circulos +  `<div class="circulo"></div>`;
+    }
+    return circulos;
 }
