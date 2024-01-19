@@ -131,7 +131,7 @@ const listaNombresHeores = (req=query,res=response) => {
 
 const getHeroe = (req=query,res=response) => {
     const {id} = req.params;
-    let sql = 'select * from HEROES where id= ?';
+    let sql = 'select * FROM DATA_HEROES where id= ?';
 
     try {
         pool.query(sql,[id],(error,rows,fields)=>{
