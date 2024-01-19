@@ -23,7 +23,14 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    transition: background-color 0.3s ease;
+}
+
+header.transparente {
+    background-color: rgb(54, 48, 98,0.5);
 }
 
 header .title {
@@ -312,3 +319,46 @@ footer {
     align-items: center;
     margin-top: 1rem;
 }
+
+/* SPINER from https://css-loaders.com/spinner/*/
+
+/* HTML: <div class="loader"></div> */
+/* HTML: <div class="loader"></div> */
+.loader {
+    margin: 2rem auto;
+    display: none;
+    --d:22px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    color: #25b09b;
+    box-shadow: 
+      calc(1*var(--d))      calc(0*var(--d))     0 0,
+      calc(0.707*var(--d))  calc(0.707*var(--d)) 0 1px,
+      calc(0*var(--d))      calc(1*var(--d))     0 2px,
+      calc(-0.707*var(--d)) calc(0.707*var(--d)) 0 3px,
+      calc(-1*var(--d))     calc(0*var(--d))     0 4px,
+      calc(-0.707*var(--d)) calc(-0.707*var(--d))0 5px,
+      calc(0*var(--d))      calc(-1*var(--d))    0 6px;
+    animation: l27 1s infinite steps(8);
+  }
+  @keyframes l27 {
+    100% {transform: rotate(1turn)}
+  }
+
+  .loader.active {
+    display: block;
+  }
+
+
+  #goToTop {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    cursor: pointer;
+    text-align: right;
+  }
+
+  #goToTop img{
+    width: 15%;
+  } 

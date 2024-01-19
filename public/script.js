@@ -290,13 +290,32 @@ function desplegarCoincidencias(filtros, contenido) {
 // }
 
 // Detectar el evento de desplazamiento
+
+let spin = document.querySelector('.loader');
+let cargar = false;
 window.addEventListener("scroll", function () {
   // Verificar si el usuario ha llegado al final de la página
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-    resultadosPorPagina = resultadosPorPagina + 6;
-    actualizarImagenes(resultadosPorPagina);
+  if (!cargar && window.innerHeight + window.scrollY >= document.body.offsetHeight-10) {
+    cargar = true;
+    spin.classList.toggle('active'); 
+    setTimeout(() => {
+      resultadosPorPagina = resultadosPorPagina + 6;
+      actualizarImagenes(resultadosPorPagina);
+      spin.classList.toggle('active'); 
+      cargar = false;
+    }, 1000);
+  }
+});
+
+window.addEventListener('scroll', function() {
+  var header = document.querySelector('header');
+  if (window.scrollY > 100) {
+      header.classList.add('transparente');
+  } else {
+      header.classList.remove('transparente');
   }
 });
 
 const recarga_pagina = document.querySelector("#recargarPagina");
 recarga_pagina.addEventListener("click", () => location.reload(true));
+
