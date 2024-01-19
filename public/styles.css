@@ -10,6 +10,11 @@ body {
     min-height: 100vh;
 }
 
+a {
+    all: unset;
+    cursor: pointer;
+}
+
 header {
 
     background-color: #363062;
@@ -38,6 +43,7 @@ section {
     padding: 1rem;
     flex-wrap: wrap; /*Por la dudas*/
     justify-content: space-around;
+    transition: 3s ease-in-out;
 }
 
 article {
@@ -49,8 +55,10 @@ article {
     border-radius: 10px;
     cursor: pointer;
     width: 45%;
-    height: 380px;
+    height: 420px;
     /* height: auto; */
+    
+    transition: all 0.5s ease; 
 }
 
 article:hover {
@@ -131,12 +139,12 @@ section article .content {
     color: #435585;
 }
 
-.paginacion-container {
+/* .paginacion-container {
     display: flex;
     justify-content: center;
     align-items: center;
     
-}
+} */
 
 
 .container-busqueda {

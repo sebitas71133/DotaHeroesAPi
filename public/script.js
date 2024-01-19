@@ -3,15 +3,18 @@ const paginas_contenedor = document.querySelector("#paginas-container");
 
 let listaHeroes = [];
 let sugerencias = [];
+let resultadosPorPagina = 6;
 
 window.addEventListener("load", () => {
-  actualizarImagenes(1);
+  actualizarImagenes(6);
   cargarNombresHerores();
+  usuario_busqueda.value = "";
 });
 
 async function cargarNombresHerores() {
   // let url = `https://dota-api-zen.onrender.com/api/dota/lista`;
-  let url = `http://localhost:3000/api/dota/lista`;
+  //   let url = `http://localhost:3000/api/dota/lista`;
+  let url = `https://dota-api-zen.onrender.com/api/dota/lista`;
 
   try {
     let response = await fetch(url, { method: "GET" });
@@ -26,8 +29,8 @@ async function cargarNombresHerores() {
   }
 }
 
-async function loadData(paginaActual) {
-  let url = `http://localhost:3000/api/dota?resultadosPorPagina=6&paginaActual=${paginaActual}`;
+async function loadData(resultadosPorPagina) {
+  let url = `https://dota-api-zen.onrender.com/api/dota?resultadosPorPagina=${resultadosPorPagina}`;
 
   try {
     let response = await fetch(url, { method: "GET" });
@@ -43,9 +46,9 @@ async function loadData(paginaActual) {
   }
 }
 
-async function actualizarImagenes(currentPage) {
+async function actualizarImagenes(resultadosPorPagina) {
   try {
-    listaHeroes = await loadData(currentPage);
+    listaHeroes = await loadData(resultadosPorPagina);
     limpiarContenedor(tarjetas_contenedor);
     if (listaHeroes.length > 0) {
       listaHeroes.forEach((e) => {
@@ -72,7 +75,7 @@ async function actualizarImagenes(currentPage) {
 }
 
 function manejarClickHeroe(e) {
-  window.location.href = `http://localhost:3000/api/dota/${e.id}`;
+  window.location.href = `https://dota-api-zen.onrender.com/api/dota/${e.id}`;
 }
 
 function agregarTarjetaSection(section, contenido, clickCallBack) {
@@ -170,24 +173,24 @@ function crearContenidoHeroe(e) {
     `;
 }
 
-function crearPaginacion() {
-  let contenido;
-  limpiarContenedor(paginas_contenedor);
-  for (let index = 0; index < 5; index++) {
-    contenido = `
-        <li class="page-item">
-            <a class="page-link" onclick="actualizarImagenes(${index + 1})">${
-      index + 1
-    }</a>
-        </li>
-        `;
-    let li = document.createElement("li");
-    li.innerHTML = contenido;
-    paginas_contenedor.appendChild(li);
-  }
-}
+// function crearPaginacion() {
+//   let contenido;
+//   limpiarContenedor(paginas_contenedor);
+//   for (let index = 0; index < 5; index++) {
+//     contenido = `
+//         <li class="page-item">
+//             <a class="page-link" onclick="actualizarImagenes(${index + 1})">${
+//       index + 1
+//     }</a>
+//         </li>
+//         `;
+//     let li = document.createElement("li");
+//     li.innerHTML = contenido;
+//     paginas_contenedor.appendChild(li);
+//   }
+// }
 
-crearPaginacion();
+// crearPaginacion();
 
 function limpiarContenedor(contenedor) {
   while (contenedor.firstChild) {
@@ -222,7 +225,7 @@ usuario_busqueda.onkeyup = (e) => {
 
     contenedor_busqueda.classList.add("active");
   } else {
-    actualizarImagenes(1);
+    actualizarImagenes(6);
     contenedor_busqueda.classList.remove("active");
   }
 };
@@ -242,10 +245,11 @@ function select(element) {
   //searchLink.href = `https://www.google.com/search?q=${usuario_busqueda.value}`;
 
   contenedor_busqueda.classList.remove("active");
+  clickBusqueda();
 }
 
 async function clickBusqueda() {
-  let url = `http://localhost:3000/api/dota/filtro?heroe=${usuario_busqueda.value}`;
+  let url = `https://dota-api-zen.onrender.com/api/dota/filtro?heroe=${usuario_busqueda.value}`;
 
   try {
     let response = await fetch(url, { method: "GET" });
@@ -255,7 +259,6 @@ async function clickBusqueda() {
 
     const { data } = await response.json();
     limpiarContenedor(tarjetas_contenedor);
-    console.log(data[0]);
     let contenido = crearContenidoHeroe(data[0]);
     agregarTarjetaSection(tarjetas_contenedor, contenido, () =>
       manejarClickHeroe(data[0])
@@ -278,10 +281,22 @@ function desplegarCoincidencias(filtros, contenido) {
   });
 }
 
-function complejidad(e) {
-  let circulos = "";
-  for (let index = 0; index < e.complexity; index++) {
-    circulos = circulos + `<div class="circulo"></div>`;
+// function complejidad(e) {
+//   let circulos = "";
+//   for (let index = 0; index < e.complexity; index++) {
+//     circulos = circulos + `<div class="circulo"></div>`;
+//   }
+//   return circulos;
+// }
+
+// Detectar el evento de desplazamiento
+window.addEventListener("scroll", function () {
+  // Verificar si el usuario ha llegado al final de la página
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+    resultadosPorPagina = resultadosPorPagina + 6;
+    actualizarImagenes(resultadosPorPagina);
   }
-  return circulos;
-}
+});
+
+const recarga_pagina = document.querySelector("#recargarPagina");
+recarga_pagina.addEventListener("click", () => location.reload(true));

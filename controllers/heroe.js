@@ -4,11 +4,11 @@ const pool = require('../database/conexion');
 const getHeroes = (req=query,res=response) => {
     
     let dataPorPagina =  req.query.resultadosPorPagina || 6;
-    let paginaActual  = req.query.paginaActual || 1;
+   // let paginaActual  = req.query.paginaActual || 1;
   
     let sql = `SELECT * FROM DATA_HEROES
-                LIMIT ${dataPorPagina} 
-                OFFSET ${(paginaActual-1)*dataPorPagina}`;
+                LIMIT ${dataPorPagina}`;
+                // OFFSET ${(paginaActual-1)*dataPorPagina}
 
     try {
         pool.query(sql,(error,rows,fields)=>{
