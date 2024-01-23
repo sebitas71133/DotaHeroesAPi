@@ -2,10 +2,10 @@ const mysql = require('mysql2');
 
 // const pool = mysql.createPool(
 //     {
-//         host : 'localhost',
-//         user : 'root',
-//         database : 'dota',
-//         port : '3306',
+//         host : process.env.LOCAL_HOST,
+//         user : process.env.LOCAL_USER,
+//         database : process.env.LOCAL_DATABASE,
+//         port : process.env.LOCAL_PORT,
 //         connectTimeout: 5000,
 //     }
 // )
@@ -39,16 +39,5 @@ pool.on('release', (connection) => {
 pool.on('error', (err) => {
     console.error('Error en el pool de conexiones:', err);
 });
-
-
-// connection.connect((err)=>{
-//     if(err){
-//         console.error('error connecting : ',err);
-//         return;
-//     }
-
-//     console.log('connected as id', connection.threadId);
-// })
-
 
 module.exports = pool;

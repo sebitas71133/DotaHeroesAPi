@@ -1,20 +1,18 @@
 const { query, response } = require('express');
+const {handleError,handleSuccess} = require('../helpers/reponseHandle');
 const pool = require('../database/conexion');
 
 const getHeroes = (req=query,res=response) => {
     
-    let dataPorPagina =  req.query.resultadosPorPagina || 6;
-   // let paginaActual  = req.query.paginaActual || 1;
-  
+    let dataPorPagina =  req.query.quantity || 6;
     let sql = `SELECT * FROM DATA_HEROES
                 LIMIT ${dataPorPagina}`;
-                // OFFSET ${(paginaActual-1)*dataPorPagina}
-
+                
     try {
-        pool.query(sql,(error,rows,fields)=>{
+        pool.query(sql,(err,rows,fields)=>{
             try {
-                if(error){
-                    throw error
+                if(err){
+                    throw err
                 }else{
 
                     new_rows = rows.map(e=>{
@@ -39,17 +37,14 @@ const getHeroes = (req=query,res=response) => {
                     })
 
                     
-                    res.status(200).json({
-                        msg : 'ok',
-                        data : new_rows
-                    });
+                    handleSuccess(res,new_rows);
                 }
-            } catch (error) {
-                console.error('Error response: ',error);
+            } catch (err) {
+                handleError(res,400,'Bad request',err);
             }
         })
-    } catch (error) {
-        console.error('Error BD: ',error);
+    } catch (err) {
+        handleError(res,500,'Internal Server Error',err);
     }
 
 }
@@ -62,10 +57,10 @@ const getHeroeFiltro = (req=query,res=response) => {
                 WHERE localized_name = "${nombreHeroe}"`;
 
     try {
-        pool.query(sql,(error,rows,fields)=>{
+        pool.query(sql,(err,rows,fields)=>{
             try {
-                if(error){
-                    throw error
+                if(err){
+                    throw err
                 }else{
 
                     new_rows = rows.map(e=>{
@@ -88,18 +83,16 @@ const getHeroeFiltro = (req=query,res=response) => {
                             attack_max : Math.round(base_attack + e.base_attack_max) 
                         }
                     })
-
-                    res.status(200).json({
-                        msg : 'ok',
-                        data : new_rows
-                    });
+                    
+                    handleSuccess(res,new_rows[0]);
+                
                 }
-            } catch (error) {
-                console.error('Error response: ',error);
+            } catch (err) {
+                handleError(res,400,'Bad request',err);
             }
         })
-    } catch (error) {
-        console.error('Error BD: ',error);
+    } catch (err) {
+        handleError(res,500,'Internal Server Error',err);
     }
 
 }
@@ -109,22 +102,19 @@ const listaNombresHeores = (req=query,res=response) => {
 
     let sql = `SELECT localized_name FROM HEROES `;
     try {
-        pool.query(sql,(error,rows,fields)=>{
+        pool.query(sql,(err,rows,fields)=>{
             try {
-                if(error){
-                    throw error
+                if(err){
+                    throw err
                 }else{
-                    res.status(200).json({
-                        msg : 'ok',
-                        data : rows
-                    });
+                    handleSuccess(res,rows);
                 }
-            } catch (error) {
-                console.error('Error response: ',error);
+            } catch (err) {
+                handleError(res,400,'Bad request',err);
             }
         })
-    } catch (error) {
-        console.error('Error BD: ',error);
+    } catch (err) {
+        handleError(res,500,'Internal Server Error',err);
     }
 
 }
@@ -134,28 +124,23 @@ const getHeroe = (req=query,res=response) => {
     let sql = 'select * FROM DATA_HEROES where id= ?';
 
     try {
-        pool.query(sql,[id],(error,rows,fields)=>{
+        pool.query(sql,[id],(err,rows,fields)=>{
             try {
-                if(error){
-                    res.status(400).json(rows);
-                    throw error
+                if(err){
+                    throw err
                 }else{
-                    res.status(200).json({
-                        msg : 'ok',
-                        data : rows
-                    });
+
+                    handleSuccess(res,rows);
                 }
-            } catch (error) {
-                console.error('Error response: ',error);
+            } catch (err) {
+                handleError(res,400,'Bad request',err);
             }
         })
-    } catch (error) {
-        console.error('Error BD: ',error);
+    } catch (err) {
+        handleError(res,500,'Internal Server Error',err);
     }
 
 }
-
-
 
 
 module.exports = {

@@ -146,14 +146,6 @@ section article .content {
     color: #435585;
 }
 
-/* .paginacion-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    
-} */
-
-
 .container-busqueda {
     margin: auto;
     max-width: 30%;
@@ -308,7 +300,7 @@ footer {
     display: inline-block;
     width: 15px;  
     height: 15px; 
-    background-color: #435585; /* Color de fondo del círculo */
+    background-color: #435585;
     border-radius: 50%; 
     margin-right: 5px; 
 }
