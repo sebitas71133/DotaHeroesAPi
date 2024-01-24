@@ -7,18 +7,12 @@ const suggestions_container = document.querySelector(".sugerencias");
 let arrayHeroData = [];
 let arrayHeroNames  = [];
 let quantityHeroes = 6;
-let dataLoaded = false;
 
 window.addEventListener("load",async () => {
-
-  if (!dataLoaded) {
-    arrayHeroData = await loadData(6);
-    dataLoaded = true;
-  }
-
+  arrayHeroData = await loadData(6);
   loadCards(arrayHeroData);
   loadHeroNames();
-  input_search.value = "";
+  // input_search.value = "";
 });
 
 async function loadHeroNames() {
@@ -83,7 +77,7 @@ async function loadData(quantityHeroes) {
   }
 }
 
-//NO DUELVE TODO CREO OJO********************
+
 function getHeroInformationById(id) {
   window.location.href = `${api_address}/api/dota/${id}`;
 }
@@ -193,7 +187,7 @@ input_search.addEventListener('keyup',async (e)=> {
 
   document.addEventListener('click', function(event) {
     if (!input_search.contains(event.target)) {
-      input_search.value = "";
+      // input_search.value = "";
       search_container.classList.remove("active");
     }
   });
@@ -206,6 +200,7 @@ input_search.addEventListener('keyup',async (e)=> {
  */
 function selectSuggestedHero(element) {
   let selectUserData = element.textContent;
+  input_search.value = selectUserData;
   search_container.classList.remove("active");
   renderSearchedHeroCard(selectUserData);
 }
