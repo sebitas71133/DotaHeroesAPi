@@ -15,26 +15,7 @@ const getHeroes = (req=query,res=response) => {
                     throw err
                 }else{
 
-                    new_rows = rows.map(e=>{
-
-                        let base_attack;
-                        switch(e.primary_attr){
-                            case 'str': base_attack = e.base_str;break
-                            case 'agi': base_attack = e.base_agi;break
-                            case 'int': base_attack = e.base_int;break
-                            case 'all': base_attack = (e.base_str+e.base_agi+e.base_int)*0.7;break;
-            
-                        }
-
-                        return {
-                            ...e,
-                            armor : parseFloat(((e.base_agi*1/6) + e.base_armor).toFixed(1)),
-                            health : e.base_str*22 + e.base_health,
-                            mana : e.base_int*12 + e.base_mana,
-                            attack_min : Math.round(base_attack + e.base_attack_min),
-                            attack_max : Math.round(base_attack + e.base_attack_max) 
-                        }
-                    })
+                    new_rows = calculateAdditionalAttributes(rows)
 
                     
                     handleSuccess(res,new_rows);
@@ -63,28 +44,37 @@ const getHeroeFiltro = (req=query,res=response) => {
                     throw err
                 }else{
 
-                    new_rows = rows.map(e=>{
-
-                        let base_attack;
-                        switch(e.primary_attr){
-                            case 'str': base_attack = e.base_str;break
-                            case 'agi': base_attack = e.base_agi;break
-                            case 'int': base_attack = e.base_int;break
-                            case 'all': base_attack = (e.base_str+e.base_agi+e.base_int)*0.7;break;
-            
-                        }
-
-                        return {
-                            ...e,
-                            armor : parseFloat(((e.base_agi*1/6) + e.base_armor).toFixed(1)),
-                            health : e.base_str*22 + e.base_health,
-                            mana : e.base_int*12 + e.base_mana,
-                            attack_min : Math.round(base_attack + e.base_attack_min),
-                            attack_max : Math.round(base_attack + e.base_attack_max) 
-                        }
-                    })
+                    new_rows = calculateAdditionalAttributes(rows)
                     
                     handleSuccess(res,new_rows[0]);
+                
+                }
+            } catch (err) {
+                handleError(res,400,'Bad request',err);
+            }
+        })
+    } catch (err) {
+        handleError(res,500,'Internal Server Error',err);
+    }
+
+}
+
+const getHeroByAttribute = (req=query,res=response) => {
+    
+
+    let attribute = req.query.attr;
+    let sql = `SELECT * FROM DATA_HEROES 
+                WHERE primary_attr = "${attribute}" `;
+
+    try {
+        pool.query(sql,(err,rows,fields)=>{
+            try {
+                if(err){
+                    throw err
+                }else{
+
+                    new_rows = calculateAdditionalAttributes(rows)
+                    handleSuccess(res,new_rows);
                 
                 }
             } catch (err) {
@@ -129,8 +119,10 @@ const getHeroe = (req=query,res=response) => {
                 if(err){
                     throw err
                 }else{
-
-                    handleSuccess(res,rows);
+                    
+                    new_rows = calculateAdditionalAttributes(rows);
+                    
+                    handleSuccess(res,new_rows);
                 }
             } catch (err) {
                 handleError(res,400,'Bad request',err);
@@ -143,9 +135,36 @@ const getHeroe = (req=query,res=response) => {
 }
 
 
+function calculateAdditionalAttributes(rows){
+    new_rows = rows.map(e=>{
+
+        let base_attack;
+        switch(e.primary_attr){
+            case 'str': base_attack = e.base_str;break
+            case 'agi': base_attack = e.base_agi;break
+            case 'int': base_attack = e.base_int;break
+            case 'all': base_attack = (e.base_str+e.base_agi+e.base_int)*0.7;break;
+
+        }
+
+        return {
+            ...e,
+            armor : parseFloat(((e.base_agi*1/6) + e.base_armor).toFixed(1)),
+            health : e.base_str*22 + e.base_health,
+            mana : e.base_int*12 + e.base_mana,
+            attack_min : Math.round(base_attack + e.base_attack_min),
+            attack_max : Math.round(base_attack + e.base_attack_max) 
+        }
+    })
+
+    return new_rows;
+      
+}
+
 module.exports = {
     getHeroes,
     getHeroe,
     getHeroeFiltro,
+    getHeroByAttribute,
     listaNombresHeores
 }

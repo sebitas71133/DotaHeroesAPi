@@ -7,9 +7,16 @@ const suggestions_container = document.querySelector(".sugerencias");
 let arrayHeroData = [];
 let arrayHeroNames  = [];
 let quantityHeroes = 6;
+let dataLoaded = false;
 
-window.addEventListener("load", () => {
-  loadCards();
+window.addEventListener("load",async () => {
+
+  if (!dataLoaded) {
+    arrayHeroData = await loadData(6);
+    dataLoaded = true;
+  }
+
+  loadCards(arrayHeroData);
   loadHeroNames();
   input_search.value = "";
 });
@@ -33,11 +40,11 @@ async function loadHeroNames() {
 
 
 
-async function loadCards() {
+async function loadCards(arrayHeroData) {
   try {
-    arrayHeroData = await loadData(quantityHeroes);
+    
+   // arrayHeroData = await loadData();
     removeChildrenContainer(card_container);
-
     arrayHeroData.forEach((hero) => {
       addCardToSection(card_container, createHeroCard(hero), () => getHeroInformationById(hero.id));
     });
@@ -76,6 +83,7 @@ async function loadData(quantityHeroes) {
   }
 }
 
+//NO DUELVE TODO CREO OJO********************
 function getHeroInformationById(id) {
   window.location.href = `${api_address}/api/dota/${id}`;
 }
@@ -164,10 +172,6 @@ function createHeroCard(heroObject) {
 
 
 input_search.addEventListener('keyup',async (e)=> {
-
-})
-
-input_search.onkeyup = (e) => {
   const searchTerm = e.target.value.trim();
   const matchedWords = getMatches(searchTerm,arrayHeroNames);
   if (e.key === "Enter") {
@@ -183,7 +187,7 @@ input_search.onkeyup = (e) => {
     }
     search_container.classList.add("active");
   } else {
-    loadCards();
+    loadCards(arrayHeroData);
     search_container.classList.remove("active");
   }
 
@@ -193,7 +197,7 @@ input_search.onkeyup = (e) => {
       search_container.classList.remove("active");
     }
   });
-};
+})
 
 
 /**
@@ -256,9 +260,10 @@ window.addEventListener("scroll", function () {
   if (!cargar && window.innerHeight + window.scrollY >= document.body.offsetHeight-10) {
     cargar = true;
     spin.classList.toggle('active'); 
-    setTimeout(() => {
+    setTimeout( async () => {
       quantityHeroes = quantityHeroes + 6;
-      loadCards(quantityHeroes);
+      arrayHeroData = await loadData(quantityHeroes); //actualizar el array
+      loadCards(arrayHeroData);
       spin.classList.toggle('active'); 
       cargar = false;
     }, 1000);
@@ -277,3 +282,31 @@ window.addEventListener('scroll', function() {
 
 document.querySelector("#recargarPagina").addEventListener("click", () => location.reload(true));
 
+// Filtrar por atributo
+
+const iconImagesAttributes = document.querySelectorAll('.icono_atributo_busqueda');
+iconImagesAttributes.forEach((image) => {
+  image.addEventListener("click",getDataByAttribute);
+});
+
+
+async function getDataByAttribute(event) {
+  const clickedImage = event.target;
+  let api_url = `${api_address}/api/dota/attribute?attr=${clickedImage.id}`;
+  try {
+        const response = await fetch(api_url,{method:"GET"});
+        console.log(response);
+        if(!response.ok){
+          throw new Error("error en la peticion");  
+        }
+
+        const {data} = await response.json();
+        loadCards(data);
+
+
+
+  } catch (error) {
+      console.log(error);
+  }
+
+}
