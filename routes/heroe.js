@@ -1,13 +1,12 @@
 const express = require('express');
 
 const router = express.Router();
-
-const {getHeroes,getHeroById,getHeroByFilter,getHeroNamesList } = require('../controllers/heroe');
-
-router.get('/',getHeroes);
-router.get('/heroe',getHeroByFilter);
-router.get('/lista',getHeroNamesList);
-router.get('/:id',getHeroById);
+const {HeroeController} = require('../controllers/heroe');
+console.log(HeroeController);
+router.get('/',HeroeController.getHeroes);
+router.get('/heroe',HeroeController.getHeroByFilter);
+router.get('/lista',HeroeController.getHeroNamesList);
+router.get('/:id',HeroeController.getHeroById);
 
 
 module.exports = router;
