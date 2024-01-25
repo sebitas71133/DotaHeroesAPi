@@ -1,5 +1,5 @@
 const express = require('express');
-var cors = require('cors')
+const {corsMiddleware} = require('../middlewares/cors');
 require('dotenv').config();
 
 class Servidor{
@@ -15,7 +15,7 @@ class Servidor{
 
     middlewares(){
         this._app.use(express.static('public'));
-        this._app.use(cors());
+        this._app.use(corsMiddleware());
         this._app.use(express.json());
     }
 
@@ -24,7 +24,7 @@ class Servidor{
     }
 
     listen(){
-        this._app.listen(this._port,'0.0.0.0',()=>{
+        this._app.listen(this._port,()=>{
             console.log(`escuchando en el puerto ${this._port}`);
         })  
     }

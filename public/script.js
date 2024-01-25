@@ -65,12 +65,13 @@ async function loadData(quantityHeroes) {
 
   try {
     const response = await fetch(api_url, { method: "GET" });
+    
     if (!response.ok) {
       throw new Error("error en la peticion");
     }
 
     const { data } = await response.json();
-
+    
     return data;
   } catch (err) {
     console.error("Error al cargar data", err);
@@ -211,8 +212,7 @@ function selectSuggestedHero(element) {
  * @param {string} selectUserData Nombre del heroe 
  */
 async function renderSearchedHeroCard(selectUserData) {
-  let api_url = `${api_address}/api/dota/filtro?heroe=${selectUserData}`;
-
+  let api_url = `${api_address}/api/dota/heroe?name=${selectUserData}`;
   try {
     let response = await fetch(api_url, { method: "GET" });
     
@@ -221,7 +221,6 @@ async function renderSearchedHeroCard(selectUserData) {
     } 
 
     const {data} = await response.json();
-  
     removeChildrenContainer(card_container);
     addCardToSection(card_container, createHeroCard(data), () =>getHeroInformationById(data.id));
     search_container.classList.remove("active");
@@ -287,10 +286,10 @@ iconImagesAttributes.forEach((image) => {
 
 async function getDataByAttribute(event) {
   const clickedImage = event.target;
-  let api_url = `${api_address}/api/dota/attribute?attr=${clickedImage.id}`;
+  let api_url = `${api_address}/api/dota/heroe?attribute=${clickedImage.id}`;
   try {
         const response = await fetch(api_url,{method:"GET"});
-        console.log(response);
+        ;
         if(!response.ok){
           throw new Error("error en la peticion");  
         }

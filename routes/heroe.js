@@ -2,15 +2,12 @@ const express = require('express');
 
 const router = express.Router();
 
-const {getHeroes,getHeroe,getHeroeFiltro,listaNombresHeores,getHeroByAttribute } = require('../controllers/heroe');
+const {getHeroes,getHeroById,getHeroByFilter,getHeroNamesList } = require('../controllers/heroe');
 
 router.get('/',getHeroes);
-router.get('/filtro',getHeroeFiltro);
-router.get('/attribute',getHeroByAttribute);
-router.get('/lista',listaNombresHeores);
-
-router.get('/:id',getHeroe);
-
+router.get('/heroe',getHeroByFilter);
+router.get('/lista',getHeroNamesList);
+router.get('/:id',getHeroById);
 
 
 module.exports = router;
