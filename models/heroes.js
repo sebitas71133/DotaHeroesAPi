@@ -53,7 +53,7 @@ class HeroeModel {
         try {
             const [rows, fields] = await pool.promise().query(sql,[id]);
             const newRows = calculateAdditionalAttributes(rows);
-            return newRows;
+            return newRows[0];
         } catch (err) {
             throw err;
         }
