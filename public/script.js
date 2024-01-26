@@ -6,10 +6,12 @@ const suggestions_container = document.querySelector(".sugerencias");
 
 let arrayHeroData = [];
 let arrayHeroNames  = [];
+let arrayHeroDataByFilter = [];
 let quantityHeroes = 6;
 
 window.addEventListener("load",async () => {
   arrayHeroData = await loadData(6);
+  arrayHeroDataByFilter = await loadData(-1);
   loadCards(arrayHeroData);
   loadHeroNames();
   // input_search.value = "";
@@ -165,10 +167,20 @@ function createHeroCard(heroObject) {
 
 // FILTROS
 
+function renderCardsHeroFilter(matchedHerosArray=[]){
+   card_container.innerHTML = matchedHerosArray.map((hero)=>{
+        return `<article>
+              ${createHeroCard(hero)}
+        </article>`
+   }).join('');
+}
+
 
 input_search.addEventListener('keyup',async (e)=> {
   const searchTerm = e.target.value.trim();
   const matchedWords = getMatches(searchTerm,arrayHeroNames);
+  const matchedHerosArray = getMatchesHero(searchTerm,arrayHeroDataByFilter);
+  
   if (e.key === "Enter") {
     renderSearchedHeroCard(input_search.value);
   }
@@ -179,6 +191,7 @@ input_search.addEventListener('keyup',async (e)=> {
       suggestions_container.innerHTML = `<li>${searchTerm}</li>`;
     } else {
       displayMatchingWords(matchedWords);
+      renderCardsHeroFilter(matchedHerosArray);
     }
     search_container.classList.add("active");
   } else {
