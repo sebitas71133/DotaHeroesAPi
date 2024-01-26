@@ -37,3 +37,9 @@ function getMatches(searchTerm,arrayHeroNames) {
   const searchLowerCase = searchTerm.toLocaleLowerCase();
   return arrayHeroNames.filter((heroName)=> heroName.toLocaleLowerCase().startsWith(searchLowerCase))
 }
+
+function getMatchesHero(searchTerm,arrayHero) {
+ 
+  const searchLowerCase = searchTerm.toLocaleLowerCase();
+  return arrayHero.filter((hero)=> (hero.localized_name).toLocaleLowerCase().startsWith(searchLowerCase) );
+}

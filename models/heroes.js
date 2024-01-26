@@ -2,8 +2,10 @@ const pool = require('../database/conexion');
 
 class HeroeModel {
     static async getHeroes({quantity}) {
-        let sql = `SELECT * FROM DATA_HEROES
-                LIMIT ${quantity}`;
+        let sql = `SELECT * FROM DATA_HEROES`;
+        if (quantity > 0) {
+            sql += ` LIMIT ${quantity}`;
+        }
         try {
             const [rows, fields] = await pool.promise().query(sql);
             const newRows = calculateAdditionalAttributes(rows);
